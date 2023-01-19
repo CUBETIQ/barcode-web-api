@@ -1,5 +1,4 @@
-from io import BytesIO, StringIO
-from os import environ
+from io import BytesIO
 
 import barcode
 import pyqrcode
@@ -13,6 +12,29 @@ QRCODE_SCALE_LIMIT = 100
 #             port=environ.get('PORT', 5000), debug=False)
 
 
+def str2bool(v):
+    return v.lower() in ("yes", "true", "t", "1")
+
+
+BARCODE_SUPPORT_IMAGE_FORMAT_MAP = {
+    'png': 'image/png',
+    'jpeg': 'image/jpeg',
+    'bmp': 'image/bmp',
+    'svg': 'image/svg+xml',
+    'gif': 'image/gif',
+    'tiff': 'image/tiff',
+}
+
+BARCODE_SUPPORT_IMAGE_MODE_MAP = {
+    'png': 'RGBA',
+    'jpeg': 'RGB',
+    'bmp': 'RGB',
+    'svg': 'RGBA',
+    'gif': 'RGBA',
+    'tiff': 'RGB',
+}
+
+
 def create_app():
     app = Flask(__name__)
 
@@ -24,11 +46,6 @@ def create_app():
             return barcode.get_barcode_class(barcode_type)
         except:
             return None
-
-    def get_output_format_mine_type(output_format):
-        if output_format == 'svg':
-            return 'image/svg+xml'
-        return 'image/png'
 
     def get_output_format_filename(output_format, code_type, prefix_file_name='barcode'):
         if output_format == 'svg':
@@ -63,8 +80,40 @@ def create_app():
         output_format = request.args.get(
             'format') or request.form.get('format') or 'png'
         dl = request.args.get('dl') or request.form.get('dl') or '0'
+        compress = str2bool(request.args.get('compress')
+                            or request.form.get('compress') or '1')
+        text_distance = float(request.args.get(
+            'text_distance') or request.form.get('text_distance') or '5.0')
+        font_size = float(request.args.get(
+            'font_size') or request.form.get('font_size') or '10.0')
+        module_width = float(request.args.get(
+            'width') or request.form.get('width') or '0.2')
+        module_height = float(request.args.get(
+            'height') or request.form.get('height') or '15.0')
+        background = request.args.get(
+            'background') or request.form.get('background') or 'white'
+        foreground = request.args.get(
+            'foreground') or request.form.get('foreground') or 'black'
+        quiet_zone = float(request.args.get(
+            'quiet_zone') or request.form.get('quiet_zone') or '6.5')
+        image_mode = request.args.get(
+            'image_mode') or request.form.get('image_mode') or None
 
         if text:
+            if image_mode is None:
+                try:
+                    image_mode = BARCODE_SUPPORT_IMAGE_MODE_MAP[output_format.lower(
+                    )]
+                except:
+                    return make_response(jsonify({
+                        'error': f'Image format {output_format} is not supported'
+                    }), 400)
+
+            if image_mode not in BARCODE_SUPPORT_IMAGE_MODE_MAP.values():
+                return make_response(jsonify({
+                    'error': f'Image mode {image_mode} is not supported'
+                }), 400)
+
             barcode_format = get_formatter(text, barcode_type)
             if barcode_format is None:
                 return make_response(jsonify({
@@ -72,15 +121,13 @@ def create_app():
                 }), 400)
 
             try:
-                mine_type = get_output_format_mine_type(output_format)
-                filename = get_output_format_filename(
-                    output_format, barcode_type)
                 writer = None
 
                 if output_format == 'svg':
                     writer = SVGWriter()
-                elif output_format == 'png':
-                    writer = ImageWriter()
+                elif output_format in BARCODE_SUPPORT_IMAGE_FORMAT_MAP:
+                    writer = ImageWriter(
+                        output_format.upper(), mode=image_mode)
                 else:
                     writer = None
 
@@ -89,9 +136,22 @@ def create_app():
                         'error': f'Output format {output_format} is not supported'
                     }), 400)
 
+                options = dict(
+                    compress=compress,
+                    module_width=module_width,
+                    module_height=module_height,
+                    text_distance=text_distance,
+                    font_size=font_size,
+                    background=background,
+                    foreground=foreground,
+                    quiet_zone=quiet_zone,
+                )
+                mine_type = BARCODE_SUPPORT_IMAGE_FORMAT_MAP[output_format]
+                filename = get_output_format_filename(
+                    output_format, barcode_type)
                 render = barcode_format(text, writer=writer)
                 output = BytesIO()
-                render.write(output)
+                render.write(output, options=options)
 
                 content_disposition = 'inline'
                 if dl == '1':
@@ -200,6 +260,49 @@ def create_app():
                     'type': 'string',
                     'description': 'Output format',
                     'values': ['png', 'svg'],
+                },
+                {
+                    'name': 'dl',
+                    'type': 'string',
+                    'description': 'Download barcode',
+                    'values': ['0', '1'],
+                },
+                {
+                    'name': 'width',
+                    'type': 'float',
+                    'description': 'Width of the barcode',
+                },
+                {
+                    'name': 'height',
+                    'type': 'float',
+                    'description': 'Height of the barcode',
+                },
+                {
+                    'name': 'background',
+                    'type': 'string',
+                    'description': 'Background color (Color Name)',
+                    'examples': ['red', 'green', 'blue', 'black', 'white']
+                },
+                {
+                    'name': 'foreground',
+                    'type': 'string',
+                    'description': 'Foreground color (Color Name)',
+                    'examples': ['red', 'green', 'blue', 'black', 'white']
+                },
+                {
+                    'name': 'quiet_zone',
+                    'type': 'int',
+                    'description': 'Quiet zone',
+                },
+                {
+                    'name': 'text_distance',
+                    'type': 'float',
+                    'description': 'Distance between barcode and text',
+                },
+                {
+                    'name': 'font_size',
+                    'type': 'float',
+                    'description': 'Font size',
                 }
             ],
             'examples': [

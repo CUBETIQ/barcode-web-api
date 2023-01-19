@@ -31,6 +31,43 @@ type=[code128 | code39 ean | ean13 | ean14 | ean8 | gs1 | gs1_128 | gtin | isbn 
 format=[png | svg]
 ```
 
+-   Support width and height (`width` and `height`)
+
+```text
+width=[0.1-100]
+height=[0.1-100]
+```
+
+-   Support Font Size (`font_size`)
+
+```text
+font_size=[0.1-50]
+```
+
+-   Support Text Distance (`text_distance`)
+
+```text
+text_distance=[0.1-50]
+```
+
+-   Support backgrounds (`background`)
+
+```text
+background=[COLOR_NAME] (Example: red, green, blue, etc)
+```
+
+-   Support foregrounds (`foreground`)
+
+```text
+foreground=[COLOR_NAME] (Example: red, green, blue, etc)
+```
+
+-   Support Space Zone (`quiet_zone`)
+
+```text
+quiet_zone=[1-100]
+```
+
 -   Support downloadable (`dl`)
 
 ```text
@@ -91,7 +128,7 @@ color=[RGB] (Example: 000 | FFF | 000000 | FFFFFF | more)
 background=[RGB] (Example: 000 | FFF | 000000 | FFFFFF | more)
 ```
 
--   Support quiet_zone (`quiet_zone`)
+-   Support Spae Zone (`quiet_zone`)
 
 ```text
 quiet_zone=[1-100]
@@ -133,7 +170,7 @@ pip install -r requirements.txt
 ```
 
 ```shell
-python -u app.py
+python3 -m flask run --reload
 ```
 
 ### Contributors

@@ -20,16 +20,6 @@ def get_formatter(text, barcode_type):
     except:
         return None
 
-
-def get_output_format(output_format):
-    try:
-        if output_format == 'svg':
-            return SVGWriter()
-        return ImageWriter()
-    except:
-        return None
-
-
 def get_output_format_mine_type(output_format):
     if output_format == 'svg':
         return 'image/svg+xml'
@@ -67,9 +57,9 @@ def index():
 @app.route('/barcode', methods=['GET', 'POST'])
 def barcode_route():
     text = request.args.get('text') or request.form.get('text')
-    barcode_type = request.args.get('type') or request.form.get('type')
+    barcode_type = request.args.get('type') or request.form.get('type') or 'code128'
     output_format = request.args.get(
-        'format') or request.form.get('format') or 'png'
+        'format') or request.form.get('format') or 'svg'
     dl = request.args.get('dl') or request.form.get('dl') or '0'
 
     if text:
@@ -82,7 +72,14 @@ def barcode_route():
         try:
             mine_type = get_output_format_mine_type(output_format)
             filename = get_output_format_filename(output_format, barcode_type)
-            writer = get_output_format(output_format)
+            writer = None
+
+            if output_format == 'svg':
+                writer = SVGWriter()
+            elif output_format == 'png':
+                writer = ImageWriter()
+            else:
+                writer = None
 
             if writer is None:
                 return make_response(jsonify({
@@ -179,6 +176,7 @@ def qrcode_route():
 def get_barcode_format_list():
     return {
         'default_type': 'code128',
+        'default_format': 'svg',
         'types': barcode.PROVIDED_BARCODES,
         'formats': ['png', 'svg'],
         'parameters': [
@@ -235,6 +233,7 @@ def get_barcode_format_list():
 def get_qrcode_format_list():
     return {
         'default_type': 'text',
+        'default_format': 'png',
         'types': ['text', 'number'],
         'formats': ['png', 'svg'],
         'parameters': [

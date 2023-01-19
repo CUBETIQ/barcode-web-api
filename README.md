@@ -1,4 +1,4 @@
-# Generate Barcode Web API
+# Generate Barcode/QRCode Web API
 
 Go to [Web API](https://barcode-web-api.heroku.ctdn.dev)
 

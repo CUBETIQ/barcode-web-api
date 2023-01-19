@@ -52,7 +52,7 @@ def get_parse_qrcode_from_text(text, qrcode_type='text'):
 @app.route('/', methods=['GET'])
 def index():
     return {
-        "message": "Welcome to Barcode/QRcode Generator API",
+        "message": "Welcome to Barcode/QRCode Generator API",
         "links": {
             "barcode": "/barcode",
             "qrcode": "/qrcode",

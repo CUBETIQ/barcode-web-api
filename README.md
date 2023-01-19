@@ -15,7 +15,7 @@ Go to [Web API](https://barcode-web-api.heroku.ctdn.dev)
 
 -   [x] Export to Image
 -   [x] Export to SVG
--   [x] Barcode/QR Options
+-   [x] Barcode/QRCode Options
 
 ### Barcode Options
 

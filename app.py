@@ -59,7 +59,7 @@ def barcode_route():
     text = request.args.get('text') or request.form.get('text')
     barcode_type = request.args.get('type') or request.form.get('type') or 'code128'
     output_format = request.args.get(
-        'format') or request.form.get('format') or 'svg'
+        'format') or request.form.get('format') or 'png'
     dl = request.args.get('dl') or request.form.get('dl') or '0'
 
     if text:
@@ -176,7 +176,7 @@ def qrcode_route():
 def get_barcode_format_list():
     return {
         'default_type': 'code128',
-        'default_format': 'svg',
+        'default_format': 'png',
         'types': barcode.PROVIDED_BARCODES,
         'formats': ['png', 'svg'],
         'parameters': [

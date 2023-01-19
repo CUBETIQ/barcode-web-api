@@ -1,3 +1,5 @@
 python-barcode==0.14.0
+pyqrcode==1.2.1
 flask==2.2.2
-environs==9.3.2
+environs==9.5.0
+pypng==0.20220715.0

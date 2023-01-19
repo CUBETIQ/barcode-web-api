@@ -181,30 +181,51 @@ def get_barcode_format_list():
         'default_type': 'code128',
         'types': barcode.PROVIDED_BARCODES,
         'formats': ['png', 'svg'],
+        'parameters': [
+            {
+                'name': 'text',
+                'type': 'string',
+                'required': True,
+                'description': 'Text to encode',
+            },
+            {
+                'name': 'type',
+                'type': 'string',
+                'required': True,
+                'description': 'Barcode type',
+                'values': barcode.PROVIDED_BARCODES,
+            },
+            {
+                'name': 'format',
+                'type': 'string',
+                'description': 'Output format',
+                'values': ['png', 'svg'],
+            }
+        ],
         'examples': [
             {
                 'type': 'code128',
                 'text': '123456789012',
                 'format': 'png',
-                'url': '/?text=123456789012&type=code128&format=png'
+                'url': '/barcode?text=123456789012&type=code128&format=png'
             },
             {
                 'type': 'code128',
                 'text': '123456789012',
                 'format': 'svg',
-                'url': '/?text=123456789012&type=code128&format=svg'
+                'url': '/barcode?text=123456789012&type=code128&format=svg'
             },
             {
                 'type': 'ean13',
                 'text': '5901234123457',
                 'format': 'png',
-                'url': '/?text=5901234123457&type=ean13&format=png'
+                'url': '/barcode?text=5901234123457&type=ean13&format=png'
             },
             {
                 'type': 'upc',
                 'text': '123456789012',
                 'format': 'png',
-                'url': '/?text=123456789012&type=upc&format=png'
+                'url': '/barcode?text=123456789012&type=upc&format=png'
             }
         ]
     }
@@ -216,13 +237,91 @@ def get_qrcode_format_list():
         'default_type': 'text',
         'types': ['text', 'number'],
         'formats': ['png', 'svg'],
+        'parameters': [
+            {
+                'name': 'text',
+                'type': 'string',
+                'description': 'Text to encode',
+                'required': True
+            },
+            {
+                'name': 'type',
+                'type': 'string',
+                'description': 'Type of text to encode',
+                'values': ['text', 'number']
+            },
+            {
+                'name': 'format',
+                'type': 'string',
+                'description': 'Output format',
+                'values': ['png', 'svg']
+            },
+            {
+                'name': 'scale',
+                'type': 'integer',
+                'description': 'Scale of QRCode',
+                'default': 1
+            },
+            {
+                'name': 'color',
+                'type': 'string',
+                'description': 'Color of QRCode',
+                'default': '000'
+            },
+            {
+                'name': 'background',
+                'type': 'string',
+                'description': 'Background color of QRCode',
+                'default': None
+            },
+            {
+                'name': 'quiet_zone',
+                'type': 'integer',
+                'description': 'Quiet zone of QRCode',
+                'default': 1
+            },
+            {
+                'name': 'encoding',
+                'type': 'string',
+                'description': 'Encoding of QRCode',
+                'default': None
+            },
+            {
+                'name': 'dl',
+                'type': 'integer',
+                'description': 'Download QRCode',
+                'default': 0
+            }
+        ],
         'examples': [
             {
                 'type': 'text',
                 'text': 'Hello World',
                 'format': 'png',
-                'url': '/?text=Hello%20World&type=text&format=png'
+                'scale': '10',
+                'url': '/qrcode?text=Hello%20World&type=text&format=png&scale=10'
             },
+            {
+                'type': 'text',
+                'text': 'Hello World',
+                'format': 'svg',
+                'scale': '10',
+                'url': '/qrcode?text=Hello%20World&type=text&format=svg&scale=10'
+            },
+            {
+                'type': 'number',
+                'text': '1234567890',
+                'format': 'png',
+                'scale': '10',
+                'url': '/qrcode?text=1234567890&type=text&format=png&scale=10'
+            },
+            {
+                'type': 'number',
+                'text': '1234567890',
+                'format': 'svg',
+                'scale': '10',
+                'url': '/qrcode?text=1234567890&type=text&format=svg&scale=10'
+            }
         ]
     }
 

@@ -1,13 +1,21 @@
 # Generate Barcode Web API
 
+Go to [Web API](https://barcode-web-api.heroku.ctdn.dev)
+
 -   Flask
--   Barcode
+-   PyBarcode (`python-barcode`)
+-   PyQRCode (`pyqrcode`)
+
+### Features
+
+-   [x] Barcode
+-   [x] QRCode
 
 ### TODO
 
 -   [x] Export to Image
 -   [x] Export to SVG
--   [x] Barcode Options
+-   [x] Barcode/QR Options
 
 ### Barcode Options
 
@@ -29,26 +37,103 @@ format=[png | svg]
 dl=[1 / 0]
 ```
 
-### Usages (Test URL: https://barcode-web-api.heroku.ctdn.dev)
+### Barcode - Usages (Test URL: https://barcode-web-api.heroku.ctdn.dev/barcode)
 
 -   Barcode Types and Availables
 
 ```text
-https://barcode-web-api.heroku.ctdn.dev/types
+https://barcode-web-api.heroku.ctdn.dev/barcode/types
 ```
 
 -   Generate Barcode from Text (GET/POST)
 
 ```text
-https://barcode-web-api.heroku.ctdn.dev?text=1234-5678-9012&type=code128
+https://barcode-web-api.heroku.ctdn.dev/barcode?text=1234-5678-9012&type=code128
 ```
 
 -   Generate Barcode from Text with FORM (POST)
 
 ```sh
-curl --location --request POST 'https://barcode-web-api.heroku.ctdn.dev' \
+curl --location --request POST 'https://barcode-web-api.heroku.ctdn.dev/barcode' \
 --form 'text="1234-5678-9012"' \
 --form 'type="code128"'
+```
+
+### QRCode Options
+
+-   Support types (`type`)
+
+```text
+type=[text | number]
+```
+
+-   Support formats (`format`)
+
+```text
+format=[png | svg]
+```
+
+-   Support scales (`scale`)
+
+```text
+scale=[1-100]
+```
+
+-   Support colors (`color`)
+
+```text
+color=[RGB] (Example: 000 | FFF | 000000 | FFFFFF | more)
+```
+
+-   Support backgrounds (`background`)
+
+```text
+background=[RGB] (Example: 000 | FFF | 000000 | FFFFFF | more)
+```
+
+-   Support quiet_zone (`quiet_zone`)
+
+```text
+quiet_zone=[1-100]
+```
+
+-   Support downloadable (`dl`)
+
+```text
+dl=[1 / 0]
+```
+
+### QRCode - Usages (Test URL: https://barcode-web-api.heroku.ctdn.dev/qrcode)
+
+-   QRCode Types and Availables
+
+```text
+https://barcode-web-api.heroku.ctdn.dev/qrcode/types
+```
+
+-   Generate QRCode from Text (GET/POST)
+
+```text
+https://barcode-web-api.heroku.ctdn.dev/qrcode?text=1234-5678-9012&type=text&scale=10
+```
+
+-   Generate QRCode from Text with FORM (POST)
+
+```sh
+curl --location --request POST 'https://barcode-web-api.heroku.ctdn.dev/qrcode' \
+--form 'text="1234-5678-9012"' \
+--form 'type="text"' \
+--form 'scale=10'
+```
+
+### Local Development
+
+```shell
+pip install -r requirements.txt
+```
+
+```shell
+python -u app.py
 ```
 
 ### Contributors

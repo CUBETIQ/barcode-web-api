@@ -126,8 +126,7 @@ def create_app():
                 if output_format == 'svg':
                     writer = SVGWriter()
                 elif output_format in BARCODE_SUPPORT_IMAGE_FORMAT_MAP:
-                    writer = ImageWriter(
-                        output_format.upper(), mode=image_mode)
+                    writer = ImageWriter(output_format.upper(), mode=image_mode)
                 else:
                     writer = None
 
@@ -198,7 +197,12 @@ def create_app():
 
         if text:
             try:
-                mine_type = get_output_format_mine_type(output_format)
+                if output_format not in BARCODE_SUPPORT_IMAGE_FORMAT_MAP:
+                    return make_response(jsonify({
+                        'error': f'Output format {output_format} is not supported'
+                    }), 400)
+
+                mine_type = BARCODE_SUPPORT_IMAGE_FORMAT_MAP[output_format]
                 filename = get_output_format_filename(
                     output_format, qrcode_type, prefix_file_name='qrcode')
 

@@ -18,4 +18,5 @@ COPY --from=builder /root/.local /root/.local
 
 COPY . .
 
-ENTRYPOINT ["python3", "-u", "app.py"]
+# ENTRYPOINT ["python3", "-u", "app.py"]
+ENTRYPOINT [ "./entrypoint.sh" ]

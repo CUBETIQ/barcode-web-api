@@ -1,4 +1,4 @@
-python-barcode==0.14.0
+python-barcode==0.15.1
 pyqrcode==1.2.1
 flask==2.2.3
 environs==9.5.0
